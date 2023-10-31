@@ -7,12 +7,16 @@ import os
 from flask import Flask
 from models import storage
 from app.v1.views import app_views
+from flask import Flask, Blueprint, jsonify, make_response
+from flask_cors import CORS
+
 
 # creating a variable app an instance of Flask
 app = Flask(__name__)
 
 # register the blueprint app_views to your Flask instance app
-app.register_blueprint(app_view, url_prefix="/api/v1")
+app.register_blueprint(app_views, url_prefix="/api/v1")
+cors = CORS(app, resources={"/*": {"origins": "0.0.0.0"}})
 
 
 @app.teardown_appcontext
@@ -26,7 +30,7 @@ else:
     host = "0.0.0.0"
 
 if os.getenv("HBNB_API_HOST"):
-    port = os.getenv("HBNB_API_PORT")
+    port = int(os.getenv("HBNB_API_PORT"))
 else:
     port = 5000
 
