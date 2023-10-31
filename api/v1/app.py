@@ -11,6 +11,7 @@ from os import getenv
 
 # creating a variable app an instance of Flask
 app = Flask(__name__)
+CORS(app, origins="0.0.0.0")
 
 # register the blueprint app_views to your Flask instance app
 app.register_blueprint(app_view, url_prefix="/api/v1")
@@ -29,16 +30,6 @@ def not_found(error):
     return make_response(jsonify({'error': 'Not found'}), 404)
 
 
-if os.getenv("HBNB_API_HOST"):
-    host = os.getenv("HBNB_API_HOST")
-else:
-    host = "0.0.0.0"
-
-if os.getenv("HBNB_API_HOST"):
-    port = os.getenv("HBNB_API_PORT")
-else:
-    port = 5000
-
-
 if __name__ == "__main__":
-    app.run(host=host, port=port, threaded=True)
+    app.run(host=getenv("HBNB_API_HOST", "0.0.0.0"),
+            port=int(getenv("HBNB_API_PORT", "5000")), threaded=True)
