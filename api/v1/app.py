@@ -24,6 +24,22 @@ def close(cntxt):
     storage.close()
 
 
+@app.errorhandler(404)
+def page_not_found(e):
+    return {"error": "Not found"}, 404
+
+
+@app.errorhandler(400)
+def page_not_found(e):
+    message = e.description
+    return message, 400
+
+
+@app.teardown_appcontext
+def close(ctx):
+    storage.close()
+
+
 if os.getenv("HBNB_API_HOST"):
     host = os.getenv("HBNB_API_HOST")
 else:
@@ -35,14 +51,5 @@ else:
     port = 5000
 
 
-@app.errorhandler(404)
-def not_found(error):
-    '''
-    return JSON formatted 404 status code response
-    '''
-    return make_response(jsonify({'error': 'Not found'}), 404)
-
-
 if __name__ == "__main__":
-    app.run(host=getenv("HBNB_API_HOST", "0.0.0.0"),
-            port=int(getenv("HBNB_API_PORT", "5000")), threaded=True)
+    app.run(host=host, port=port, threaded=True)
